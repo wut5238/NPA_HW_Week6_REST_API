@@ -1,6 +1,7 @@
 import requests
 import urllib.parse
 import json
+from datetime import datetime
 
 accesstoken = "YThkODU5MDMtZDE3Mi00YWFhLWJiNDYtNTY4NzYzYWQ4YThjNGRmYTczOWItZWMz_P0A1_408b8cf5-9f52-48d9-be13-2cd9891ab13f"
 headers = {
@@ -22,17 +23,29 @@ def message():
 
 def lat_lon():
     location = message()[1:]
-    print(location)
+    # print(location)
     url = "http://www.mapquestapi.com/geocoding/v1/address?"
     key = "677Aj2t5YizNv5wG7D5AGO6B5ZY2L7zS"
     url_map = url + urllib.parse.urlencode({"key":key, "location":location})
-    print(url_map)
+    # print(url_map)
     json_data = requests.get(url_map).json()
     lat = json_data["results"][0]["locations"][0]["latLng"]["lat"]
     lon = json_data["results"][0]["locations"][0]["latLng"]["lng"]
     return [lat, lon]
 # print(json.dumps(lat_lon(), indent=4))
-print(lat_lon())
+
+def iss():
+    lat = lat_lon()[0]
+    lon = lat_lon()[1]
+    url = "http://api.open-notify.org/iss-pass.json?"
+    url_iss = url + urllib.parse.urlencode({"lat":lat, "lon":lon})
+    json_data = requests.get(url_iss).json()
+    # print(json.dumps(json_data, indent=4))
+    duration = json_data["response"][0]["duration"]
+    timestamp = json_data["response"][0]["risetime"]
+    date_time = datetime.fromtimestamp(timestamp)
+    print("In",message()[1:],"ISS will fly over on",date_time,"for",duration,"seconds")
+
 # while True: 
 #     print(message())
 #     if message().startswith("/"):
