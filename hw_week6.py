@@ -15,14 +15,14 @@ def room():
     for i in json_data["items"]:
         if i["title"] == check:
             return i["id"]
-def message():
+def messages():
     url_message = "https://webexapis.com/v1/messages"
-    paramas = {"roomId": room(), "max":1}
-    json_data = requests.get(url_message, headers=headers, params=paramas).json()
+    params = {"roomId": room(), "max":1}
+    json_data = requests.get(url_message, headers=headers, params=params).json()
     return json_data["items"][0]["text"]
 
 def lat_lon():
-    location = message()[1:]
+    location = messages()[1:]
     # print(location)
     url = "http://www.mapquestapi.com/geocoding/v1/address?"
     key = "677Aj2t5YizNv5wG7D5AGO6B5ZY2L7zS"
@@ -44,7 +44,14 @@ def iss():
     duration = json_data["response"][0]["duration"]
     timestamp = json_data["response"][0]["risetime"]
     date_time = datetime.fromtimestamp(timestamp)
-    print("In",message()[1:],"ISS will fly over on",date_time,"for",duration,"seconds")
+    return [duration, date_time]
+
+def post_message():
+    url = "https://webexapis.com/v1/messages"
+    message = "In {} ISS will fly over on {} for {} seconds".format(messages()[1:], str(iss()[1]), str(iss()[0]))
+    params = {"roomId": room(), "markdown": message}
+    res = requests.post(url, headers=headers, json=params)
+    print(res.json())
 
 # while True: 
 #     print(message())
