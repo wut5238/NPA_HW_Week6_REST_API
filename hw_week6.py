@@ -8,6 +8,15 @@ headers = {
  'Authorization': 'Bearer {}'.format(accesstoken),
  'Content-Type': 'application/json'
 }
+
+def ls_room():
+    url_list_room = "https://webexapis.com/v1/rooms"
+    json_data = requests.get(url_list_room, headers=headers).json()
+    print("list of rooms:")
+    for i in json_data["items"]:
+        print(i["title"])
+ls_room()
+
 check = input("what room? ")
 def room():
     url_room = "https://webexapis.com/v1/rooms"
@@ -15,6 +24,7 @@ def room():
     for i in json_data["items"]:
         if i["title"] == check:
             return i["id"]
+
 def messages():
     url_message = "https://webexapis.com/v1/messages"
     params = {"roomId": room(), "max":1}
@@ -50,12 +60,11 @@ def post_message():
     url = "https://webexapis.com/v1/messages"
     message = "In {} ISS will fly over on {} for {} seconds".format(messages()[1:], str(iss()[1]), str(iss()[0]))
     params = {"roomId": room(), "markdown": message}
-    res = requests.post(url, headers=headers, json=params)
-    print(res.json())
+    requests.post(url, headers=headers, json=params)
+    # print(res.json())
 
-# while True: 
-#     print(message())
-#     if message().startswith("/"):
-#         print("yes")
-#     else:
-#         print("no")
+while True: 
+    if messages().startswith("/"):
+        post_message()
+    else:
+        print(messages())
