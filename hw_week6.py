@@ -35,7 +35,7 @@ def lat_lon():
     location = messages()[1:]
     # print(location)
     url = "http://www.mapquestapi.com/geocoding/v1/address?"
-    key = ""
+    key = ""#ไปเอา key จาก https://developer.mapquest.com/
     url_map = url + urllib.parse.urlencode({"key":key, "location":location})
     # print(url_map)
     json_data = requests.get(url_map).json()
